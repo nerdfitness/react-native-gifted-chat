@@ -5,29 +5,49 @@ import React from 'react';
 import { Image, StyleSheet, View, ViewPropTypes } from 'react-native';
 import Lightbox from 'react-native-lightbox';
 
-export default function MessageImage({
-  containerStyle,
-  lightboxProps,
-  imageProps,
-  imageStyle,
-  currentMessage,
-}) {
-  return (
-    <View style={[styles.container, containerStyle]}>
-      <Lightbox
-        activeProps={{
-          style: styles.imageActive,
-        }}
-        {...lightboxProps}
-      >
-        <Image
-          {...imageProps}
-          style={[styles.image, imageStyle]}
-          source={{ uri: currentMessage.image }}
-        />
-      </Lightbox>
-    </View>
-  );
+export default class MessageImage extends React.Component {
+
+  shouldComponentUpdate(nextProps) {
+    const next = nextProps.currentMessage;
+    const current = this.props.currentMessage;
+
+    return (
+      next.sent !== current.sent ||
+      next.received !== current.received ||
+      next.pending !== current.pending ||
+      next.createdAt !== current.createdAt ||
+      next.text !== current.text ||
+      next.image !== current.image ||
+      next.video !== current.video ||
+      next.audio !== current.audio
+    );
+  }
+  render() {
+    const {
+      containerStyle,
+      lightboxProps,
+      imageProps,
+      imageStyle,
+      currentMessage,
+    } = this.props;
+    return (
+      <View style={[styles.container, containerStyle]}>
+        <Lightbox
+          activeProps={{
+            style: styles.imageActive,
+          }}
+          {...lightboxProps}
+        >
+          <Image
+            {...imageProps}
+            style={[styles.image, imageStyle]}
+            source={{ uri: currentMessage.image }}
+          />
+        </Lightbox>
+      </View>
+    );
+  }
+
 }
 
 const styles = StyleSheet.create({
